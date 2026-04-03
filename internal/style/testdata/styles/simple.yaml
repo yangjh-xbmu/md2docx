@@ -1,0 +1,102 @@
+meta:
+  id: simple
+  name: 简洁风格
+  description: 无封面无目录，简洁排版，适合快速笔记和报告
+  category: general
+  locale: zh-CN
+
+page:
+  size: A4
+  orientation: portrait
+  margin:
+    top: 25.4mm
+    bottom: 25.4mm
+    left: 25.4mm
+    right: 25.4mm
+
+fonts:
+  latin: Times New Roman
+  cjk: 宋体
+  mono: Courier New
+
+styles:
+  heading1:
+    font_cjk: 黑体
+    font_latin: Arial
+    font_size: 18pt
+    bold: true
+    alignment: left
+    space_before: 18pt
+    space_after: 6pt
+    page_break_before: false
+    keep_with_next: true
+
+  heading2:
+    font_cjk: 黑体
+    font_latin: Arial
+    font_size: 14pt
+    bold: true
+    alignment: left
+    space_before: 12pt
+    space_after: 6pt
+    keep_with_next: true
+
+  heading3:
+    font_cjk: 黑体
+    font_latin: Arial
+    font_size: 12pt
+    bold: true
+    space_before: 6pt
+    space_after: 3pt
+    keep_with_next: true
+
+  body:
+    font_size: 12pt
+    alignment: justify
+    line_spacing: 1.5
+    first_line_indent: 2em
+
+  quote:
+    font_cjk: 楷体
+    font_size: 10.5pt
+    alignment: justify
+    left_indent: 2cm
+    right_indent: 2cm
+    color: "#555555"
+
+  code_block:
+    font_latin: Courier New
+    font_cjk: 等线
+    font_size: 9pt
+    line_spacing: 1.15
+
+  table:
+    font_size: 10.5pt
+    alignment: center
+    header_bold: true
+    border: true
+
+  image:
+    max_width_pct: 80
+    alignment: center
+
+heading_numbering:
+  enabled: false
+
+toc:
+  enabled: false
+
+cover:
+  enabled: false
+
+header:
+  font_size: 9pt
+
+footer:
+  center: "{page}"
+  font_size: 9pt
+
+list:
+  bullet_chars: ["●", "○", "■"]
+  ordered_format: "{n}."
+  indent_per_level: 0.75cm

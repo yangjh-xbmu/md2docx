@@ -2,6 +2,7 @@ package render
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/yuin/goldmark/ast"
 	east "github.com/yuin/goldmark/extension/ast"
@@ -23,6 +24,9 @@ type DocBuilder struct {
 	listType   string // "bullet" or "ordered"
 	// Heading numbering
 	numberer *HeadingNumberer
+	// Image tracking
+	images   []*imageEntry
+	imgCount int
 }
 
 // ToDocx converts a goldmark AST to a .docx file.
@@ -205,9 +209,17 @@ func (b *DocBuilder) renderNode(n ast.Node, source []byte, entering bool) (ast.W
 			return ast.WalkSkipChildren, nil
 		}
 
+	case *ast.Image:
+		if entering {
+			src := string(node.Destination)
+			alt := string(node.Text(source))
+			b.handleImage(src, alt)
+			return ast.WalkSkipChildren, nil
+		}
+
 	case *east.Table:
 		if entering {
-			b.renderTable(node, source)
+			b.handleTable(node, source)
 			return ast.WalkSkipChildren, nil
 		}
 
@@ -375,6 +387,20 @@ func (b *DocBuilder) buildPackage() *ooxml.Package {
 		}
 	}
 
+	// Add image parts and relationships
+	for _, img := range b.images {
+		pkg.Images = append(pkg.Images, ooxml.ImagePart{
+			PartName:    img.partName,
+			ContentType: img.contentType,
+			Data:        img.data,
+		})
+		pkg.Rels = append(pkg.Rels, ooxml.Relationship{
+			ID:     img.relID,
+			Type:   "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
+			Target: img.partName[len("word/"):], // relative to word/
+		})
+	}
+
 	doc := &ooxml.Document{
 		W:  "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
 		R:  "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
@@ -389,61 +415,47 @@ func (b *DocBuilder) buildPackage() *ooxml.Package {
 	return pkg
 }
 
-func (b *DocBuilder) renderTable(table *east.Table, source []byte) {
-	// Collect rows: goldmark Table has TableHeader and TableRow children
-	var rows [][]string
-	isHeaderRow := true
-	for child := table.FirstChild(); child != nil; child = child.NextSibling() {
-		switch row := child.(type) {
-		case *east.TableHeader:
-			cells := collectTableCells(row, source)
-			if len(cells) > 0 {
-				rows = append(rows, cells)
-			}
-		case *east.TableRow:
-			_ = row
-			cells := collectTableCells(child, source)
-			rows = append(rows, cells)
-		}
-		isHeaderRow = false
-	}
-	_ = isHeaderRow
-
-	if len(rows) == 0 {
-		return
-	}
-
-	// Generate table XML as a raw paragraph (simplified)
-	// For now, render as paragraphs with tab-separated cells
-	for i, row := range rows {
-		ppr := &ooxml.ParagraphProperties{
-			PStyle: &ooxml.PStyle{Val: "Normal"},
-		}
-		b.startParagraph(ppr)
-		for j, cell := range row {
-			if j > 0 {
-				b.addTextRun("\t", nil)
-			}
-			rpr := (*ooxml.RunProperties)(nil)
-			if i == 0 {
-				rpr = &ooxml.RunProperties{Bold: &ooxml.Empty{}}
-			}
-			b.addTextRun(cell, rpr)
-		}
+func (b *DocBuilder) handleTable(table *east.Table, source []byte) {
+	if b.inPara {
 		b.endParagraph()
+	}
+	tbl := buildTable(table, source, b.Style.Styles.Table)
+	if tbl != nil {
+		b.elements = append(b.elements, tbl)
 	}
 }
 
-func collectTableCells(row ast.Node, source []byte) []string {
-	var cells []string
-	for cell := row.FirstChild(); cell != nil; cell = cell.NextSibling() {
-		text := ""
-		for c := cell.FirstChild(); c != nil; c = c.NextSibling() {
-			if t, ok := c.(*ast.Text); ok {
-				text += string(t.Segment.Value(source))
-			}
-		}
-		cells = append(cells, text)
+func (b *DocBuilder) handleImage(src, alt string) {
+	if b.inPara {
+		b.endParagraph()
 	}
-	return cells
+
+	// Calculate page dimensions for scaling
+	pageW, _ := ooxml.PageSizeTwips(b.Style.Page.Size)
+	pageWidthTwips := parseTwipsInt(pageW)
+	marginLeftTwips := parseTwipsInt(ooxml.MeasureToTwips(b.Style.Page.Margin.Left))
+	marginRightTwips := parseTwipsInt(ooxml.MeasureToTwips(b.Style.Page.Margin.Right))
+
+	b.imgCount++
+	img, err := loadImage(src, b.BaseDir, pageWidthTwips, marginLeftTwips, marginRightTwips, b.Style.Styles.Image, b.imgCount)
+	if err != nil {
+		// Skip image on error, output a warning paragraph
+		b.startParagraph(&ooxml.ParagraphProperties{})
+		b.addTextRun(fmt.Sprintf("[图片加载失败: %s]", src), &ooxml.RunProperties{
+			Color: &ooxml.SVal{Val: "FF0000"},
+		})
+		b.endParagraph()
+		fmt.Fprintf(os.Stderr, "警告: %v\n", err)
+		return
+	}
+
+	b.images = append(b.images, img)
+	p := buildImageParagraph(img, alt, b.Style.Styles.Image)
+	b.elements = append(b.elements, p)
+}
+
+func parseTwipsInt(s string) int {
+	v := 0
+	fmt.Sscanf(s, "%d", &v)
+	return v
 }

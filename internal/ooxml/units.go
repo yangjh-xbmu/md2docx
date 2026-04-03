@@ -121,6 +121,21 @@ func PageSizeTwips(size string) (string, string) {
 	}
 }
 
+// ColorHex strips # from hex color (exported).
+func ColorHex(s string) string {
+	return colorHex(s)
+}
+
+// AlignmentVal converts friendly names to OOXML values (exported).
+func AlignmentVal(s string) string {
+	return alignmentVal(s)
+}
+
+// FontSizeHalfPoints converts "12pt" to half-points string (exported).
+func FontSizeHalfPoints(size string) string {
+	return fontSizeTwips(size)
+}
+
 func parsePt(s string) float64 {
 	s = strings.TrimSpace(s)
 	s = strings.TrimSuffix(s, "pt")

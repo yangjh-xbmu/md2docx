@@ -147,6 +147,168 @@ type Hyperlink struct {
 	Runs    []Run    `xml:",any"`
 }
 
+// Table represents w:tbl
+type Table struct {
+	XMLName xml.Name         `xml:"w:tbl"`
+	TblPr   *TableProperties `xml:"w:tblPr,omitempty"`
+	TblGrid *TableGrid       `xml:"w:tblGrid,omitempty"`
+	Rows    []TableRow       `xml:",any"`
+}
+
+type TableProperties struct {
+	TblStyle *SVal          `xml:"w:tblStyle,omitempty"`
+	TblW     *TableWidth    `xml:"w:tblW,omitempty"`
+	Jc       *Justification `xml:"w:jc,omitempty"`
+	TblBorders *TableBorders `xml:"w:tblBorders,omitempty"`
+	TblLook  *TableLook     `xml:"w:tblLook,omitempty"`
+}
+
+type TableWidth struct {
+	W    string `xml:"w:w,attr"`
+	Type string `xml:"w:type,attr"`
+}
+
+type TableGrid struct {
+	Cols []GridCol `xml:"w:gridCol"`
+}
+
+type GridCol struct {
+	W string `xml:"w:w,attr"`
+}
+
+type TableBorders struct {
+	Top     *BorderVal `xml:"w:top,omitempty"`
+	Left    *BorderVal `xml:"w:left,omitempty"`
+	Bottom  *BorderVal `xml:"w:bottom,omitempty"`
+	Right   *BorderVal `xml:"w:right,omitempty"`
+	InsideH *BorderVal `xml:"w:insideH,omitempty"`
+	InsideV *BorderVal `xml:"w:insideV,omitempty"`
+}
+
+type BorderVal struct {
+	Val   string `xml:"w:val,attr"`
+	Sz    string `xml:"w:sz,attr,omitempty"`
+	Space string `xml:"w:space,attr,omitempty"`
+	Color string `xml:"w:color,attr,omitempty"`
+}
+
+type TableLook struct {
+	Val          string `xml:"w:val,attr"`
+	FirstRow     string `xml:"w:firstRow,attr,omitempty"`
+	LastRow      string `xml:"w:lastRow,attr,omitempty"`
+	FirstColumn  string `xml:"w:firstColumn,attr,omitempty"`
+	LastColumn   string `xml:"w:lastColumn,attr,omitempty"`
+	NoHBand      string `xml:"w:noHBand,attr,omitempty"`
+	NoVBand      string `xml:"w:noVBand,attr,omitempty"`
+}
+
+// TableRow represents w:tr
+type TableRow struct {
+	XMLName xml.Name           `xml:"w:tr"`
+	TrPr    *TableRowProperties `xml:"w:trPr,omitempty"`
+	Cells   []TableCell        `xml:",any"`
+}
+
+type TableRowProperties struct {
+	TblHeader *Empty `xml:"w:tblHeader,omitempty"`
+}
+
+// TableCell represents w:tc
+type TableCell struct {
+	XMLName xml.Name             `xml:"w:tc"`
+	TcPr    *TableCellProperties `xml:"w:tcPr,omitempty"`
+	Content []any                `xml:",any"`
+}
+
+type TableCellProperties struct {
+	TcW   *TableWidth `xml:"w:tcW,omitempty"`
+	Shd   *Shading    `xml:"w:shd,omitempty"`
+	VAlign *SVal      `xml:"w:vAlign,omitempty"`
+}
+
+type Shading struct {
+	Val   string `xml:"w:val,attr"`
+	Color string `xml:"w:color,attr,omitempty"`
+	Fill  string `xml:"w:fill,attr,omitempty"`
+}
+
+// Drawing represents w:drawing for inline images
+type Drawing struct {
+	XMLName xml.Name      `xml:"w:drawing"`
+	Inline  *InlineDrawing `xml:"wp:inline,omitempty"`
+}
+
+type InlineDrawing struct {
+	DistT  string `xml:"distT,attr"`
+	DistB  string `xml:"distB,attr"`
+	DistL  string `xml:"distL,attr"`
+	DistR  string `xml:"distR,attr"`
+	Extent *Extent `xml:"wp:extent"`
+	DocPr  *DocPr  `xml:"wp:docPr"`
+	Graphic *Graphic `xml:"a:graphic"`
+}
+
+type Extent struct {
+	CX string `xml:"cx,attr"`
+	CY string `xml:"cy,attr"`
+}
+
+type DocPr struct {
+	ID   string `xml:"id,attr"`
+	Name string `xml:"name,attr"`
+	Descr string `xml:"descr,attr,omitempty"`
+}
+
+type Graphic struct {
+	XMLName     xml.Name     `xml:"a:graphic"`
+	A           string       `xml:"xmlns:a,attr"`
+	GraphicData *GraphicData `xml:"a:graphicData"`
+}
+
+type GraphicData struct {
+	URI string `xml:"uri,attr"`
+	Pic *Picture `xml:"pic:pic"`
+}
+
+type Picture struct {
+	XMLName  xml.Name  `xml:"pic:pic"`
+	PicNS    string    `xml:"xmlns:pic,attr"`
+	NvPicPr  *NvPicPr  `xml:"pic:nvPicPr"`
+	BlipFill *BlipFill `xml:"pic:blipFill"`
+	SpPr     *ShapeProperties `xml:"pic:spPr"`
+}
+
+type NvPicPr struct {
+	CNvPr    *DocPr  `xml:"pic:cNvPr"`
+	CNvPicPr *Empty  `xml:"pic:cNvPicPr"`
+}
+
+type BlipFill struct {
+	Blip    *Blip    `xml:"a:blip"`
+	Stretch *Stretch `xml:"a:stretch"`
+}
+
+type Blip struct {
+	Embed string `xml:"r:embed,attr"`
+}
+
+type Stretch struct {
+	FillRect *Empty `xml:"a:fillRect"`
+}
+
+type ShapeProperties struct {
+	Xfrm *Transform2D `xml:"a:xfrm,omitempty"`
+	PrstGeom *PresetGeometry `xml:"a:prstGeom,omitempty"`
+}
+
+type Transform2D struct {
+	Ext *Extent `xml:"a:ext"`
+}
+
+type PresetGeometry struct {
+	Prst string `xml:"prst,attr"`
+}
+
 // FldChar for field codes (TOC, PAGE, etc.)
 type FldChar struct {
 	XMLName     xml.Name `xml:"w:fldChar"`

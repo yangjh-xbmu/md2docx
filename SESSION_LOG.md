@@ -1,6 +1,7 @@
 # SESSION LOG
 
 ## 完成
+- 2026-04-03 完成 Go 版 Phase 9：质量收尾和发布。BOM 处理、CLI Long/Example help、ldflags 版本注入、GitHub Actions CI、Makefile sha256 校验、README.md、测试覆盖率从 30-48% 提升到 84-91%（cli 89.6%, ooxml 87.5%, render 84.4%），三样式端到端 Word 验收通过
 - 2026-04-03 完成 Go 版 Phase 8：merge 子命令，支持直接文件参数、glob 模式、contents.yaml 配置（per-file heading_offset），10 个单元测试通过，端到端验证 Word 打开正常
 - 2026-04-03 完成 Go 版 Phase 7：GFM 表格渲染（w:tbl/w:tr/w:tc），支持边框、表头加粗、表头背景色、单元格内 bold/italic/code 格式，7 个单元测试通过
 - 2026-04-03 完成 Go 版 Phase 7：图片嵌入（wp:inline drawing），支持相对路径解析、max_width_pct 缩放（保持宽高比）、word/media/ 嵌入 + relationship，5 个单元测试通过
@@ -50,6 +51,6 @@
 - 2026-04-03 python-docx 插入 TOC 是通过 Word 域代码（field code），文档打开后需按 Ctrl+A 再 F9 才能更新实际目录内容
 
 ## 待办
-1. 继续 Go 版 Phase 9：质量收尾和发布（错误处理、CLI help、CI、交叉编译、README）
-2. 将 Achuan-2/pandoc_docx_template 的 Lua filters（preserve_font_color、add-inline-code）移植到 Go 版渲染器
-3. 考虑将 course-toolkit 的 docx 生成统一迁移到 md2docx Go 版
+1. 将 Achuan-2/pandoc_docx_template 的 Lua filters（preserve_font_color、add-inline-code）移植到 Go 版渲染器
+2. 考虑将 course-toolkit 的 docx 生成统一迁移到 md2docx Go 版
+3. 打 v0.1.0 tag 并创建 GitHub Release

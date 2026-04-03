@@ -9,6 +9,9 @@ import (
 // ParseFrontmatter extracts YAML frontmatter from markdown content.
 // Returns metadata map and the body without frontmatter.
 func ParseFrontmatter(content string) (map[string]any, string) {
+	// Strip UTF-8 BOM if present
+	content = strings.TrimPrefix(content, "\xef\xbb\xbf")
+
 	if !strings.HasPrefix(content, "---") {
 		return make(map[string]any), content
 	}

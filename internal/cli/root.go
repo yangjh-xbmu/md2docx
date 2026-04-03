@@ -12,7 +12,8 @@ import (
 )
 
 var (
-	version   = "0.1.0"
+	// Version is set via ldflags at build time.
+	Version   = "dev"
 	outputOpt string
 	styleOpt  string
 	noCover   bool
@@ -21,9 +22,17 @@ var (
 )
 
 var rootCmd = &cobra.Command{
-	Use:     "md2docx [file.md]",
-	Short:   "Markdown to Word converter",
-	Version: version,
+	Use:   "md2docx [file.md]",
+	Short: "Markdown to Word converter",
+	Long: `md2docx 将 Markdown 文件转换为排版精良的 Word (.docx) 文档。
+
+支持 CJK 双字体、目录生成、标题编号、封面页、页眉页脚、
+GFM 表格、图片嵌入等功能。内置多套样式，零配置即可使用。`,
+	Example: `  md2docx 论文.md
+  md2docx input.md -o output.docx
+  md2docx input.md --style academic-cn
+  md2docx input.md --no-cover --no-toc`,
+	Version: Version,
 	Args:    cobra.MaximumNArgs(1),
 	RunE:    runConvert,
 }

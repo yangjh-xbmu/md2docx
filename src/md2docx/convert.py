@@ -8,17 +8,31 @@ from typing import Any
 
 import click
 
+from md2docx.css2style import css_to_reference_docx
 from md2docx.frontmatter import parse_frontmatter, resolve_metadata
 from md2docx.merge import merge_files, parse_contents_yaml, resolve_glob_patterns
 from md2docx.pandoc import require_pandoc, run_pandoc
 from md2docx.postprocess import postprocess
-from md2docx.style import load_style, override_post_config
+from md2docx.style import StyleConfig, load_style, override_post_config
+
+
+def _apply_css_override(style: StyleConfig, css_path: Path, tmp_dir: Path) -> StyleConfig:
+    """Generate a reference.docx from CSS and return a new StyleConfig using it."""
+    css_ref = tmp_dir / "css_reference.docx"
+    css_to_reference_docx(css_path, base_doc=style.reference_doc, output=css_ref)
+    return StyleConfig(
+        name=style.name,
+        reference_doc=css_ref,
+        lua_filters=style.lua_filters,
+        post=style.post,
+    )
 
 
 def convert(
     source: Path,
     output: Path | None = None,
     style_name: str | None = None,
+    css_path: Path | None = None,
     no_post: bool = False,
     cli_overrides: dict[str, Any] | None = None,
 ) -> Path:
@@ -35,6 +49,13 @@ def convert(
     # Determine style: CLI > frontmatter > default
     effective_style = style_name or metadata.get("style", "default")
     style = load_style(effective_style)
+
+    # If CSS provided, generate a reference.docx from it
+    if css_path is not None:
+        css_tmp = Path(tempfile.mkdtemp(prefix="md2docx_css_"))
+        style = _apply_css_override(style, css_path, css_tmp)
+    else:
+        css_tmp = None
 
     # Override post-processing config with frontmatter values
     post_config = override_post_config(style.post, metadata)
@@ -67,6 +88,10 @@ def convert(
                 rough_output.rename(output)
     finally:
         tmp_path.unlink(missing_ok=True)
+        if css_tmp is not None:
+            import shutil
+
+            shutil.rmtree(css_tmp, ignore_errors=True)
 
     return output
 

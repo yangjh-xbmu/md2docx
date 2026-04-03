@@ -1,0 +1,58 @@
+/* 学术论文样式 */
+
+h1 {
+  font-family: "SimHei", "Arial";
+  font-size: 22pt;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 24pt;
+  margin-bottom: 12pt;
+  line-height: 1.5;
+}
+
+h2 {
+  font-family: "SimHei", "Arial";
+  font-size: 16pt;
+  font-weight: bold;
+  margin-top: 18pt;
+  margin-bottom: 6pt;
+}
+
+h3 {
+  font-family: "SimHei", "Arial";
+  font-size: 14pt;
+  font-weight: bold;
+  margin-top: 12pt;
+  margin-bottom: 6pt;
+}
+
+p {
+  font-family: "SimSun", "Times New Roman";
+  font-size: 12pt;
+  text-indent: 2em;
+  line-height: 1.75;
+  margin-bottom: 6pt;
+  text-align: justify;
+}
+
+blockquote {
+  font-family: "KaiTi", "Georgia";
+  font-size: 10.5pt;
+  margin-left: 2cm;
+  margin-right: 2cm;
+  color: #333333;
+}
+
+.abstract {
+  font-size: 10.5pt;
+  font-family: "SimSun", "Times New Roman";
+  margin-left: 2cm;
+  margin-right: 2cm;
+  line-height: 1.5;
+}
+
+.keywords {
+  font-size: 10.5pt;
+  font-weight: bold;
+  margin-top: 12pt;
+}

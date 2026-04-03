@@ -8,6 +8,7 @@ import click
 
 from md2docx import __version__
 from md2docx.convert import convert, convert_merged
+from md2docx.css2style import css_to_reference_docx
 from md2docx.pandoc import check_pandoc
 from md2docx.style import list_styles, load_style
 
@@ -22,11 +23,13 @@ def main() -> None:
 @click.argument("source", type=click.Path(exists=True, path_type=Path))
 @click.option("-o", "--output", type=click.Path(path_type=Path), help="输出 .docx 路径")
 @click.option("-s", "--style", "style_name", default=None, help="样式名称")
+@click.option("--css", type=click.Path(exists=True, path_type=Path), help="CSS 样式文件路径")
 @click.option("--no-post", is_flag=True, help="跳过后处理，只用 pandoc 原始输出")
 def convert_cmd(
     source: Path,
     output: Path | None,
     style_name: str | None,
+    css: Path | None,
     no_post: bool,
 ) -> None:
     """转换单个 Markdown 文件为 Word 文档。"""
@@ -35,6 +38,7 @@ def convert_cmd(
             source=source,
             output=output,
             style_name=style_name,
+            css_path=css,
             no_post=no_post,
         )
         click.echo(f"已导出: {result}")
@@ -178,6 +182,34 @@ post_processing:
 
     click.echo(f"已创建样式骨架: {user_dir}")
     click.echo("请将 reference.docx 模板文件放入该目录。")
+
+
+@styles_group.command(name="build")
+@click.argument("css_file", type=click.Path(exists=True, path_type=Path))
+@click.option("-o", "--output", type=click.Path(path_type=Path), help="输出 reference.docx 路径")
+@click.option(
+    "--base",
+    type=click.Path(exists=True, path_type=Path),
+    help="基础 .docx 模板（在其上叠加 CSS 样式）",
+)
+def styles_build_cmd(css_file: Path, output: Path | None, base: Path | None) -> None:
+    """从 CSS 文件生成 reference.docx 模板。
+
+    CSS 选择器映射规则:
+      h1..h6 → Heading 1..6, p → Normal, blockquote → Quote,
+      .className → Word 自定义样式 "className"
+
+    支持的 CSS 属性:
+      font-family, font-size, font-weight, font-style, color,
+      text-align, text-indent, line-height, margin-top/bottom/left/right,
+      text-decoration, page-break-before
+    """
+    try:
+        result = css_to_reference_docx(css_file, base_doc=base, output=output)
+        click.echo(f"已生成模板: {result}")
+    except Exception as e:
+        click.echo(f"错误: {e}", err=True)
+        raise SystemExit(1)
 
 
 @main.command(name="check")

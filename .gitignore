@@ -1,9 +1,17 @@
+# Go
+md2docx
+dist/
+cmd/md2docx/styles/
+
+# Local docs
+PROMOTION.md
+
+# Python (legacy)
 .venv/
 __pycache__/
 *.pyc
 .pytest_cache/
 *.egg-info/
-dist/
 build/
 .ruff_cache/
 uv.lock

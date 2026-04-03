@@ -1,6 +1,7 @@
 # SESSION LOG
 
 ## 完成
+- 2026-04-03 完成 Go 版 Phase 5：TOC 域代码生成、标题编号（多级 + 中文格式）、页眉页脚（变量替换 + PAGE 域代码），18 个新测试全部通过
 - 2026-04-03 生成 AST（抽象语法树）学习资料，保存到 Obsidian，结合 md2docx 项目实例讲解 beginner 级别
 - 2026-04-03 生成三份端到端测试文档（学术论文/简洁备忘/默认混排），用户验证效果远超预期
 - 2026-04-03 完成 Go 版 Phase 4：多样式系统，新增 academic-cn（学术论文）和 simple（简洁）两个内嵌样式，实现 styles list/show 子命令
@@ -27,6 +28,7 @@
 - 2026-04-03 编写 19 个人工验收测试用例（TESTING.md）
 
 ## 发现
+- 2026-04-03 OOXML SectionProperties 中 headerReference/footerReference 必须在 pgSz/pgMar 之前，否则 encoding/xml 序列化后 Word 可能忽略引用。Go struct 字段顺序决定 XML 输出顺序
 - 2026-04-03 Go style YAML 的 bool 零值陷阱：yaml 解析 `false` 后得到 Go 零值，applyDefaults 中 `if !field` 无法区分「未设置」和「显式 false」，解法是不在 defaults 中覆盖 bool 字段
 - 2026-04-03 OOXML CJK 双字体不需要逐 run 检测字符：只需在 styles.xml 的 w:rFonts 同时设置 w:ascii 和 w:eastAsia，Word 会根据字符 Unicode range 自动选择字体
 - 2026-04-03 go:embed 不跟随符号链接，嵌入外部目录的文件需要 cp 复制而非 ln -s
@@ -37,6 +39,6 @@
 - 2026-04-03 python-docx 插入 TOC 是通过 Word 域代码（field code），文档打开后需按 Ctrl+A 再 F9 才能更新实际目录内容
 
 ## 待办
-1. 继续 Go 版 Phase 5-9：TOC、标题编号、封面、页眉页脚、图片嵌入、merge、发布
+1. 继续 Go 版 Phase 6-9：封面、图片嵌入、merge 多文件合并、发布
 2. 将 Achuan-2/pandoc_docx_template 的 Lua filters（preserve_font_color、add-inline-code）移植到 Go 版渲染器
 3. 考虑将 course-toolkit 的 docx 生成统一迁移到 md2docx Go 版

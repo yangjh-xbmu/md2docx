@@ -21,14 +21,17 @@ type DocBuilder struct {
 	// List tracking
 	listDepth  int
 	listType   string // "bullet" or "ordered"
+	// Heading numbering
+	numberer *HeadingNumberer
 }
 
 // ToDocx converts a goldmark AST to a .docx file.
 func ToDocx(doc ast.Node, source []byte, s *style.Style, meta map[string]any, outputPath string, baseDir string) error {
 	b := &DocBuilder{
-		Style:   s,
-		Meta:    meta,
-		BaseDir: baseDir,
+		Style:    s,
+		Meta:     meta,
+		BaseDir:  baseDir,
+		numberer: NewHeadingNumberer(s.HeadingNumbering),
 	}
 
 	// Walk the AST
@@ -56,6 +59,10 @@ func (b *DocBuilder) renderNode(n ast.Node, source []byte, entering bool) (ast.W
 			b.startParagraph(&ooxml.ParagraphProperties{
 				PStyle: &ooxml.PStyle{Val: styleID},
 			})
+			// Add heading numbering prefix
+			if prefix := b.numberer.FormatNumber(node.Level); prefix != "" {
+				b.addTextRun(prefix+" ", nil)
+			}
 		} else {
 			b.endParagraph()
 		}
@@ -300,6 +307,11 @@ func (b *DocBuilder) addRun(rpr *ooxml.RunProperties, content ...any) {
 }
 
 func (b *DocBuilder) buildPackage() *ooxml.Package {
+	// Prepend TOC elements if enabled
+	if tocElems := GenerateTOCElements(b.Style.TOC); len(tocElems) > 0 {
+		b.elements = append(tocElems, b.elements...)
+	}
+
 	// Page setup
 	pageW, pageH := ooxml.PageSizeTwips(b.Style.Page.Size)
 	orient := ""
@@ -324,6 +336,40 @@ func (b *DocBuilder) buildPackage() *ooxml.Package {
 		},
 	}
 
+	pkg := &ooxml.Package{
+		Styles: ooxml.GenerateStylesXML(b.Style),
+	}
+
+	// Generate numbering.xml for lists
+	pkg.Numbering = ooxml.GenerateNumberingXML(b.Style)
+
+	// Generate header/footer XML and wire up references
+	// Relationship IDs must match what writeDocRels produces.
+	// rId1 = styles, rId2 = numbering (if present), then header, then footer.
+	nextID := 2
+	if pkg.Numbering != nil {
+		nextID++
+	}
+
+	headerXML := ooxml.GenerateHeaderXML(b.Style.Header, b.Meta)
+	if headerXML != nil {
+		pkg.Header = headerXML
+		sectPr.HeaderRef = &ooxml.HeaderFooterRef{
+			Type: "default",
+			RID:  fmt.Sprintf("rId%d", nextID),
+		}
+		nextID++
+	}
+
+	footerXML := ooxml.GenerateFooterXML(b.Style.Footer, b.Meta)
+	if footerXML != nil {
+		pkg.Footer = footerXML
+		sectPr.FooterRef = &ooxml.HeaderFooterRef{
+			Type: "default",
+			RID:  fmt.Sprintf("rId%d", nextID),
+		}
+	}
+
 	doc := &ooxml.Document{
 		W:  "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
 		R:  "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
@@ -333,14 +379,7 @@ func (b *DocBuilder) buildPackage() *ooxml.Package {
 			SectPr:   sectPr,
 		},
 	}
-
-	pkg := &ooxml.Package{
-		Document: doc,
-		Styles:   ooxml.GenerateStylesXML(b.Style),
-	}
-
-	// Generate numbering.xml for lists
-	pkg.Numbering = ooxml.GenerateNumberingXML(b.Style)
+	pkg.Document = doc
 
 	return pkg
 }

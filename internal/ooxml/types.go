@@ -17,10 +17,10 @@ type Body struct {
 }
 
 type SectionProperties struct {
-	PgSz     *PageSize    `xml:"w:pgSz,omitempty"`
-	PgMar    *PageMargins `xml:"w:pgMar,omitempty"`
 	HeaderRef *HeaderFooterRef `xml:"w:headerReference,omitempty"`
 	FooterRef *HeaderFooterRef `xml:"w:footerReference,omitempty"`
+	PgSz      *PageSize        `xml:"w:pgSz,omitempty"`
+	PgMar     *PageMargins     `xml:"w:pgMar,omitempty"`
 }
 
 type PageSize struct {

@@ -51,6 +51,6 @@
 - 2026-04-03 python-docx 插入 TOC 是通过 Word 域代码（field code），文档打开后需按 Ctrl+A 再 F9 才能更新实际目录内容
 
 ## 待办
-1. 将 Achuan-2/pandoc_docx_template 的 Lua filters（preserve_font_color、add-inline-code）移植到 Go 版渲染器
-2. 考虑将 course-toolkit 的 docx 生成统一迁移到 md2docx Go 版
-3. 打 v0.1.0 tag 并创建 GitHub Release
+1. 打 v0.1.0 tag 并创建 GitHub Release
+2. 将 Achuan-2/pandoc_docx_template 的 Lua filters（preserve_font_color、add-inline-code）移植到 Go 版渲染器
+3. 考虑将 course-toolkit 的 docx 生成统一迁移到 md2docx Go 版

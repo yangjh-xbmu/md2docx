@@ -1,0 +1,7 @@
+heading_offset: 0
+
+files:
+  - chapter1.md
+  - chapter2.md
+  - path: chapter3.md
+    heading_offset: 1

@@ -1,0 +1,13 @@
+name: default
+reference_doc: reference.docx
+
+post_processing:
+  toc: false
+  toc_depth: 3
+  heading_numbering: false
+  image_width_pct: 80
+  header_left: ""
+  header_right: ""
+  footer_center: ""
+  cover:
+    enabled: false

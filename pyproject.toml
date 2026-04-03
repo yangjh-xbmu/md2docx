@@ -1,0 +1,36 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "md2docx"
+version = "0.1.0"
+description = "Markdown to Word converter with template system and post-processing"
+requires-python = ">=3.12"
+dependencies = [
+    "click>=8.1",
+    "python-docx>=1.1",
+    "python-frontmatter>=1.1",
+    "pyyaml>=6.0",
+]
+
+[project.scripts]
+md2docx = "md2docx.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/md2docx"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "integration: tests that require pandoc installed",
+]
+
+[tool.ruff]
+line-length = 99
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+    "pytest-cov>=7.1.0",
+]

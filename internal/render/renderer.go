@@ -307,9 +307,14 @@ func (b *DocBuilder) addRun(rpr *ooxml.RunProperties, content ...any) {
 }
 
 func (b *DocBuilder) buildPackage() *ooxml.Package {
-	// Prepend TOC elements if enabled
+	// Prepend TOC elements if enabled (TOC comes after cover)
 	if tocElems := GenerateTOCElements(b.Style.TOC); len(tocElems) > 0 {
 		b.elements = append(tocElems, b.elements...)
+	}
+
+	// Prepend cover elements if enabled (cover comes first)
+	if coverElems := GenerateCoverElements(b.Style.Cover, b.Meta); len(coverElems) > 0 {
+		b.elements = append(coverElems, b.elements...)
 	}
 
 	// Page setup

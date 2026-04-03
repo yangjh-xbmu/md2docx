@@ -1,6 +1,7 @@
 # SESSION LOG
 
 ## 完成
+- 2026-04-03 完成 Go 版 Phase 8：merge 子命令，支持直接文件参数、glob 模式、contents.yaml 配置（per-file heading_offset），10 个单元测试通过，端到端验证 Word 打开正常
 - 2026-04-03 完成 Go 版 Phase 7：GFM 表格渲染（w:tbl/w:tr/w:tc），支持边框、表头加粗、表头背景色、单元格内 bold/italic/code 格式，7 个单元测试通过
 - 2026-04-03 完成 Go 版 Phase 7：图片嵌入（wp:inline drawing），支持相对路径解析、max_width_pct 缩放（保持宽高比）、word/media/ 嵌入 + relationship，5 个单元测试通过
 - 2026-04-03 替换 renderer.go 中简化的 tab 分隔表格渲染为真正 OOXML 表格元素
@@ -31,9 +32,9 @@
 - 2026-04-03 实现 CSS → Word 样式转换（css2style 模块）：解析 CSS、CJK 字体自动识别、生成 reference.docx
 - 2026-04-03 CLI 集成 --css 参数和 styles build 子命令
 - 2026-04-03 54 个 pytest 全部通过，端到端验证 CLI 所有命令
-- 2026-04-03 编写 19 个人工验收测试用例（TESTING.md）
 
 ## 发现
+- 2026-04-03 Go merge 多文件合并的核心设计：Markdown 级拼接（非 docx 级），第一个文件 frontmatter 保留，后续剥离，然后整体走 convert 管线。比 docx 级合并简单且可靠
 - 2026-04-03 OOXML 图片嵌入需要同时处理三个层面：word/media/ 中存放文件、word/_rels/document.xml.rels 中添加 relationship、document.xml 中用 wp:inline + pic:pic 引用。DocPr.id 可以用 relID 字符串（Word 能容忍）
 - 2026-04-03 goldmark GFM Table 的 TableHeader 节点是一个完整的行（包含 TableCell 子节点），不是单独的单元格标记。遍历时 TableHeader 和 TableRow 平级处理即可
 - 2026-04-03 OOXML 表格宽度设 type="auto" + w="0" 让 Word 自动计算列宽，比手动计算 twips 更可靠
@@ -49,6 +50,6 @@
 - 2026-04-03 python-docx 插入 TOC 是通过 Word 域代码（field code），文档打开后需按 Ctrl+A 再 F9 才能更新实际目录内容
 
 ## 待办
-1. 继续 Go 版 Phase 8-9：merge 多文件合并、发布
+1. 继续 Go 版 Phase 9：质量收尾和发布（错误处理、CLI help、CI、交叉编译、README）
 2. 将 Achuan-2/pandoc_docx_template 的 Lua filters（preserve_font_color、add-inline-code）移植到 Go 版渲染器
 3. 考虑将 course-toolkit 的 docx 生成统一迁移到 md2docx Go 版

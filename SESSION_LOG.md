@@ -9,6 +9,8 @@
 - 2026-04-03 创建 default.yaml 内嵌样式：宋体正文、黑体标题、A4 纸张、CJK 双字体
 - 2026-04-03 调研 GitHub 同类项目：Achuan-2/pandoc_docx_template(624★)、nihole/md2docx(190★)、docxcompose(128★) 等
 - 2026-04-03 调研 AI 开发工作流工具：Spec Kit(85k★)、GSD(47k★)、BMAD(43k★)、CCPM(8k★)，选定 Spec Kit
+- 2026-04-03 完成 Go 版 Phase 4：多样式系统，新增 academic-cn（学术论文）和 simple（简洁）两个内嵌样式，实现 styles list/show 子命令
+- 2026-04-03 修复 setHeadingDefaults bool 零值问题：将 EmbeddedStyles 从 embed.FS 改为 fs.FS 接口，PageBreakBefore 不再在 applyDefaults 中覆盖
 - 2026-04-03 修复 Python 版两个 bug：标题编号重复（正则去重）、默认输出路径改为桌面
 - 2026-04-03 调研现有三代 md2docx 实现（works-used-python/merge、.claude/skills/md2docx、hongo/tools/md2docx），确定加强版方案
 - 2026-04-03 完成技术设计（PLAN.md）：两阶段管线、多模板系统、frontmatter 驱动、多文件合并
@@ -32,8 +34,6 @@
 - 2026-04-03 python-docx 插入 TOC 是通过 Word 域代码（field code），文档打开后需按 Ctrl+A 再 F9 才能更新实际目录内容
 
 ## 待办
-1. 继续 Go 版 Phase 4-9：多样式（academic-cn/simple）、TOC、标题编号、封面、页眉页脚、图片嵌入、merge、发布
+1. 继续 Go 版 Phase 5-9：TOC、标题编号、封面、页眉页脚、图片嵌入、merge、发布
 2. 将 Achuan-2/pandoc_docx_template 的 Lua filters（preserve_font_color、add-inline-code）移植到 Go 版渲染器
-3. 给 Python 版 merge 命令加上 --css 参数支持
-4. 在实际教学材料生成场景中试用，收集需要调整的后处理细节
-5. 考虑将 course-toolkit 的 docx 生成统一迁移到 md2docx Go 版
+3. 考虑将 course-toolkit 的 docx 生成统一迁移到 md2docx Go 版

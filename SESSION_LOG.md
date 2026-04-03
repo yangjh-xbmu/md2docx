@@ -1,6 +1,10 @@
 # SESSION LOG
 
 ## 完成
+- 2026-04-03 完成 Go 版 Phase 7：GFM 表格渲染（w:tbl/w:tr/w:tc），支持边框、表头加粗、表头背景色、单元格内 bold/italic/code 格式，7 个单元测试通过
+- 2026-04-03 完成 Go 版 Phase 7：图片嵌入（wp:inline drawing），支持相对路径解析、max_width_pct 缩放（保持宽高比）、word/media/ 嵌入 + relationship，5 个单元测试通过
+- 2026-04-03 替换 renderer.go 中简化的 tab 分隔表格渲染为真正 OOXML 表格元素
+- 2026-04-03 新增 ooxml/types.go 中 27 个 OOXML 类型定义（Table/Drawing/Picture 等）
 - 2026-04-03 完成 Go 版 Phase 6：封面页生成（render/cover.go），支持 CoverConfig.Layout 声明式布局（text/spacer），frontmatter 变量绑定，CJK 字体，literal: 前缀直出文本，分页符，6 个单元测试通过
 - 2026-04-03 修复 YAML 日期解析问题：yaml.Unmarshal 将日期字符串解析为 time.Time，在 resolveText 中格式化为 "2006-01-02"
 - 2026-04-03 完成 Go 版 Phase 5：TOC 域代码生成、标题编号（多级 + 中文格式）、页眉页脚（变量替换 + PAGE 域代码），18 个新测试全部通过
@@ -30,6 +34,9 @@
 - 2026-04-03 编写 19 个人工验收测试用例（TESTING.md）
 
 ## 发现
+- 2026-04-03 OOXML 图片嵌入需要同时处理三个层面：word/media/ 中存放文件、word/_rels/document.xml.rels 中添加 relationship、document.xml 中用 wp:inline + pic:pic 引用。DocPr.id 可以用 relID 字符串（Word 能容忍）
+- 2026-04-03 goldmark GFM Table 的 TableHeader 节点是一个完整的行（包含 TableCell 子节点），不是单独的单元格标记。遍历时 TableHeader 和 TableRow 平级处理即可
+- 2026-04-03 OOXML 表格宽度设 type="auto" + w="0" 让 Word 自动计算列宽，比手动计算 twips 更可靠
 - 2026-04-03 YAML yaml.Unmarshal 会将 "2026-04-03" 等日期字符串自动解析为 time.Time，在封面等需要文本显示的场景中需要特殊处理格式化
 - 2026-04-03 OOXML SectionProperties 中 headerReference/footerReference 必须在 pgSz/pgMar 之前，否则 encoding/xml 序列化后 Word 可能忽略引用。Go struct 字段顺序决定 XML 输出顺序
 - 2026-04-03 Go style YAML 的 bool 零值陷阱：yaml 解析 `false` 后得到 Go 零值，applyDefaults 中 `if !field` 无法区分「未设置」和「显式 false」，解法是不在 defaults 中覆盖 bool 字段
@@ -42,6 +49,6 @@
 - 2026-04-03 python-docx 插入 TOC 是通过 Word 域代码（field code），文档打开后需按 Ctrl+A 再 F9 才能更新实际目录内容
 
 ## 待办
-1. 继续 Go 版 Phase 7-9：图片嵌入、merge 多文件合并、发布
+1. 继续 Go 版 Phase 8-9：merge 多文件合并、发布
 2. 将 Achuan-2/pandoc_docx_template 的 Lua filters（preserve_font_color、add-inline-code）移植到 Go 版渲染器
 3. 考虑将 course-toolkit 的 docx 生成统一迁移到 md2docx Go 版

@@ -1,0 +1,138 @@
+meta:
+  id: academic-cn
+  name: 中文学术论文
+  description: 适用于中文学术论文，宋体正文、黑体标题，含封面、目录、标题编号
+  category: academic
+  locale: zh-CN
+
+page:
+  size: A4
+  orientation: portrait
+  margin:
+    top: 25.4mm
+    bottom: 25.4mm
+    left: 31.8mm
+    right: 31.8mm
+
+fonts:
+  latin: Times New Roman
+  cjk: 宋体
+  mono: Courier New
+
+styles:
+  heading1:
+    font_cjk: 黑体
+    font_latin: Arial
+    font_size: 22pt
+    bold: true
+    alignment: center
+    space_before: 24pt
+    space_after: 12pt
+    page_break_before: true
+    keep_with_next: true
+
+  heading2:
+    font_cjk: 黑体
+    font_latin: Arial
+    font_size: 16pt
+    bold: true
+    alignment: left
+    space_before: 12pt
+    space_after: 6pt
+    keep_with_next: true
+
+  heading3:
+    font_cjk: 黑体
+    font_latin: Arial
+    font_size: 14pt
+    bold: true
+    alignment: left
+    space_before: 6pt
+    space_after: 3pt
+    keep_with_next: true
+
+  body:
+    font_cjk: 宋体
+    font_latin: Times New Roman
+    font_size: 12pt
+    alignment: justify
+    line_spacing: 1.5
+    first_line_indent: 2em
+
+  quote:
+    font_cjk: 楷体
+    font_latin: Georgia
+    font_size: 10.5pt
+    alignment: justify
+    left_indent: 2cm
+    right_indent: 2cm
+    line_spacing: 1.3
+    color: "#555555"
+
+  code_block:
+    font_latin: Courier New
+    font_cjk: 等线
+    font_size: 9pt
+    line_spacing: 1.15
+
+  table:
+    font_size: 10.5pt
+    alignment: center
+    header_bold: true
+    border: true
+    border_color: "#000000"
+
+  image:
+    max_width_pct: 80
+    alignment: center
+
+heading_numbering:
+  enabled: true
+  formats:
+    1: "{1}"
+    2: "{1}.{2}"
+    3: "{1}.{2}.{3}"
+
+toc:
+  enabled: true
+  title: 目录
+  depth: 3
+  page_break_after: true
+
+cover:
+  enabled: true
+  page_break_after: true
+  layout:
+    - type: spacer
+      height: 120pt
+    - type: text
+      source: title
+      font_cjk: 黑体
+      font_size: 28pt
+      bold: true
+      alignment: center
+    - type: spacer
+      height: 40pt
+    - type: text
+      source: author
+      font_size: 16pt
+      alignment: center
+    - type: spacer
+      height: 20pt
+    - type: text
+      source: date
+      font_size: 14pt
+      alignment: center
+
+header:
+  right: "{title}"
+  font_size: 9pt
+
+footer:
+  center: "{page}"
+  font_size: 9pt
+
+list:
+  bullet_chars: ["●", "○", "■"]
+  ordered_format: "{n}."
+  indent_per_level: 0.75cm

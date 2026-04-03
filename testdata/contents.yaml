@@ -1,0 +1,6 @@
+heading_offset: 0
+files:
+  - merge_ch1.md
+  - path: merge_ch2.md
+    heading_offset: 0
+  - merge_ch3.md

@@ -1,3 +1,12 @@
+---
+purpose: 将 Markdown 文件转换为 Word (.docx) 格式，提供单一二进制文件、零依赖的转换工具。
+status: active
+next_steps: []
+capabilities:
+  - markdown-to-docx
+  - single-binary
+  - zero-dependency
+---
 # md2docx
 
 Markdown to Word (.docx) converter. Single binary, zero dependencies.
